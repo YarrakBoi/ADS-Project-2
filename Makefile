@@ -4,8 +4,8 @@ dict1: test.o dictionary.o list.o
 dict2: test.o dictionary.o list.o array.o
 	gcc -o dict1 test.o dictionary.o list.o array.o -g -Wall
 
-dict3: test2.o dictionary.o list.o datapoint.o
-	gcc -o dict3 test2.o dictionary.o list.o datapoint.o -g -Wall
+dict3: test2.o dictionary.o list.o datapoint.o datalist.o
+	gcc -o dict3 test2.o dictionary.o list.o datapoint.o datalist.o -g -Wall
 
 test.o: test.c
 	gcc -c test.c -g -Wall 
@@ -24,3 +24,6 @@ array.o: array.c array.h
 
 datapoint.o: datapoint.c datapoint.h
 	gcc -c datapoint.c -g -Wall
+
+datalist.o: datalist.c datalist.h
+	gcc -c datalist.c -g -Wall

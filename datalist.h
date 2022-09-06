@@ -9,6 +9,8 @@ data_node_t* create_datanode(data_point_t* data);
 
 data_node_t *create_datalist(data_node_t *head, data_point_t* data);
 
+data_point_t* create_data_point(dataDict_t* dataDict);
+
 void print_datalist(data_node_t* head);
 
 void free_datalist(data_node_t* head);

@@ -12,7 +12,7 @@ typedef struct data_point data_point_t;
 
 point_t* create_point(long double x,long double y);
 
-data_point_t* create_data_point(node_t* node_info);
+data_point_t* create_data_point(dataDict_t* dataDict);
 
 void print_point(point_t* data);
 

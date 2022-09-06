@@ -1,0 +1,123 @@
+#include <stdbool.h>
+#include <math.h>
+#include "quadtree.h"
+#include "dictionary.h"
+
+//0 for SW,1 for SE, 2 for NE, 3 for NW
+enum quadrants{SW = 0, SE = 1, NE = 2, NW = 3};
+
+struct point2d {
+    long double x_coordinate;
+    long double y_coordinate;
+}
+
+struct rectangle {
+    long double bot_left_x;
+    long double bot_left_y;
+    long double top_right_x;
+    long double top_right_y;
+};
+
+struct quadtree {
+    bool is_internal_root = false;
+    rectangle_t* bounding_box;
+    point_t* point;
+    node_t* NW = NULL;
+    node_t* NE = NULL;
+    node_t* SW = NULL;
+    node_t* SE = NULL;
+}
+
+struct dataDict {
+    int footpath_id;
+    char* address;
+    char* clue_sa;
+    char* asset_type;
+    double deltaz;
+    double distance;
+    double grade1in;
+    int mcc_id;
+    int mccid_int;
+    double rlmax;
+    double rlmin;
+    char* segside; 
+    int statusid;
+    int streetid;
+    int street_group;
+    double start_lat;
+    double start_lon;
+    double end_lat;
+    double end_lon;
+};
+
+quad_t* create_tree() {
+    quad_t* temp = (quad_t*) malloc(sizeof(*temp));
+    temp->bounding_box = NULL;
+    temp->point = NULL;
+    return temp;
+}
+
+boolean in_bounding(point_t* P,rectangle_t* bounding_box) {
+    return (P->x_coordinate => bounding_box->bot_left_x && P->x_coordinate < bounding_box->top_right_x
+    && p->y_coordinate => bounding_box->bot_left_y && p->y_coordinate < bounding_box->top_right_y);
+}
+
+int determine_quadrants(rectangle_t* bounding_box, point_t* point) {
+    long double rectangle_length = fabs(bounding_box->bot_left_x - bounding_box->top_right_x);
+    long double rectangle_height = fabs(bounding_box->bot_left_y - bounding_box->top_right_y);
+    long double rectangle_center_x = fabs(bounding_box->bot_left_x + (rectangle_length/2));
+    long double rectangle_center_y = fabs(bounding_box->bot_left_y + (rectangle_height/2));
+    if (point->x_coordinate >= bounding_box->bot_left_x && point->x_coordinate < rectangle_center_x) {
+        if (point->y_coordinate >= bot_left_y && point->y_coordinate < rectangle_center_y) {
+            //return SW here
+            return SW;
+        }
+        else if (point->y_coordinate => rectangle_center_y && point->y_coordinate < top_right_y) { 
+            //return NW here
+            return NW;
+        }
+    }
+    else if(point->x_coordinate >= rectangle_center_x && point->x_coordinate < bounding_box->top_right_x) {
+        if (point->y_coordinate >= bot_left_y && point->y_coordinate < rectangle_center_y) {
+            //return SE here
+            return SE;
+        }
+        else if (point->y_coordinate => rectangle_center_y && point->y_coordinate < top_right_y) { 
+            //return NE here
+            return NE;
+        }
+    }
+
+}
+
+quad_t* create_node(long double latitude_y,long double longitude_x,long double bot_left_x,long double bot_left_y,long double top_right_x,long double top_right_y) {
+    quad_t* temp = (quad_t*) malloc(sizeof(*temp));
+    assert(temp);
+    temp->create_rectangle(bot_left_x,bot_left_y,top_right_x,top_right_y);
+    temp->create_point(longitude_x,latitude_y);
+    return temp;
+}
+
+point_t* create_point(long double x_coordinate_copied, long double y_coordinate_copied) {
+    point_t* temp = (point_t*) malloc(sizeof(*temp));
+    assert(temp);
+    temp->x_coordinate = strtod(x_coordinate_copied,NULL);
+    temp->y_coordinate = strtod(y_coordinate_copied,NULL);
+    return temp;
+}
+
+rectangle_t* create_rectangle(long double bot_left_x,long double bot_left_y,long double top_right_x,long double top_right_y) {
+    rectangle_t* temp = (rectangle_t*) malloc(sizeof(*temp));
+    assert(temp);
+    temp->bot_left_x = strtod(bot_left_x,NULL);
+    temp->bot_left_y = strtod(bot_left_y,NULL);
+    temp->top_right_x = strtod(top_right_x,NULL);
+    temp->top_right_y = strtod(top_right_y,NULL);
+    return temp;
+}
+
+
+
+void free_tree(quad_t * root) {
+
+}

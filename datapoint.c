@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include "datapoint.h"
+#include "dictionary.h"
 #include "list.h"
 
 struct point2d {
@@ -58,3 +59,21 @@ data_point_t* create_data_point(node_t* node_info) {
     data_temp->end_coordinate_point = create_point(node_info->data->end_lon,node_info->data->end_lat);
     return data_temp;
 }
+
+void print_point(point_t* data) {
+    printf("%Lf %Lf\n", data->x_coordinate,data->y_coordinate);
+}
+
+void print_datapoint(data_point_t* data) {
+    print_point(data->start_coordinate_point);
+    print_point(data->end_coordinate_point);
+    print_data(data->info);
+}
+
+void free_point(data_point_t* d) {
+    free(d->start_coordinate_point);
+    free(d->end_coordinate_point);
+    free_struct(d->info);
+    free(d);
+}
+

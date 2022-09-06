@@ -8,6 +8,7 @@
 #include "dictionary.h"
 #include "list.h"
 #include "datapoint.h"
+#include "datalist.h"
 
 //512 char + null byte
 #define MAXCHAR 513
@@ -60,7 +61,7 @@ int main(int argc, char **argv) {
     FILE *in_fp = fopen("tests/dataset_1.csv","r");
     char row[MAXCHAR];
     char line[MAX_FIELD_CHAR];
-    node_t *head = NULL;
+    data_node_t *head = NULL;
     int address_count = 0;
 
     //assert(in_fp && out_fp);
@@ -70,27 +71,16 @@ int main(int argc, char **argv) {
     
     //create structs and populate linked list
     while (((temp) = data_dict_read(in_fp)) != NULL) {
-        head = create_list(head,temp);
+        data_point_temp = create_data_point(temp);
+        head = create_datalist(head,data_point_temp);
     }
-
     assert(head != NULL);
     
     //closing after reading required input
     fclose(in_fp);
 
-    print_list(head);
-    
-    printf("before data_pint_temp\n");
+    print_datalist(head);
 
-    data_point_temp = create_data_point(head);
-
-    assert(data_point_temp != NULL);
-
-    printf("before data_pint_temp1\n");
-
-    printf("\n%Lf %Lf %Lf %Lf",data_point_temp->start_coordinate_point->x_coordinate,data_point_temp->start_coordinate_point->y_coordinate,data_point_temp->end_coordinate_point->x_coordinate,data_point_temp->start_coordinate_point->y_coordinate);
-    
-    printf("after data_pint_tem2p\n");
 
     return 0;
 }

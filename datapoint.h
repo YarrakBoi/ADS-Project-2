@@ -14,5 +14,11 @@ point_t* create_point(long double x,long double y);
 
 data_point_t* create_data_point(node_t* node_info);
 
+void print_point(point_t* data);
+
+void print_datapoint(data_point_t* data);
+
+void free_point(data_point_t* d);
+
 
 #endif

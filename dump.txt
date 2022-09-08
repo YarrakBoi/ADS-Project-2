@@ -50,9 +50,9 @@ struct dataDict {
     double end_lon;
 };
 
-quad_t* create_tree() {
+quad_t* create_tree(rectangle_t* rectangle) {
     quad_t* temp = (quad_t*) malloc(sizeof(*temp));
-    temp->bounding_box = NULL;
+    temp->bounding_box = rectangle;
     temp->point = NULL;
     return temp;
 }
@@ -87,7 +87,6 @@ int determine_quadrants(rectangle_t* bounding_box, point_t* point) {
             return NE;
         }
     }
-
 }
 
 quad_t* create_node(long double latitude_y,long double longitude_x,long double bot_left_x,long double bot_left_y,long double top_right_x,long double top_right_y) {
@@ -95,14 +94,6 @@ quad_t* create_node(long double latitude_y,long double longitude_x,long double b
     assert(temp);
     temp->create_rectangle(bot_left_x,bot_left_y,top_right_x,top_right_y);
     temp->create_point(longitude_x,latitude_y);
-    return temp;
-}
-
-point_t* create_point(long double x_coordinate_copied, long double y_coordinate_copied) {
-    point_t* temp = (point_t*) malloc(sizeof(*temp));
-    assert(temp);
-    temp->x_coordinate = strtod(x_coordinate_copied,NULL);
-    temp->y_coordinate = strtod(y_coordinate_copied,NULL);
     return temp;
 }
 
@@ -121,3 +112,44 @@ rectangle_t* create_rectangle(long double bot_left_x,long double bot_left_y,long
 void free_tree(quad_t * root) {
 
 }
+
+quad_t* insert_node*(point_t* new_point, quad_t* head){
+    
+    if (head->internal == false) {
+    //if root is empty, just insert 
+        if (in_bounding_box) {
+            if (head->point == NULL) { // CASE WHITE
+                head->point = new_point;
+            }
+            else if(head->point != NULL) { // CASE BLACK
+                //temp old_point = head->point
+                //head->point = NULL;
+                //head->internal = true
+                //enum old_quadrant = determine_quadrants(head->rectrangle,old_point); 
+                //head->old_quadrant = create_tree(subdivide(head->rectangle,old_quadrant));
+                //head->old_quadrant->point = old_point;
+                //enum new_quadrant = determine_quadrants(head->rectangle,new_point);
+                if (old_quadrant != new_quadrant){
+                    head->new_quadrant = create_tree(subdivide(head->rectangle, new_quadrant))
+                    head->new_quadrant->point = new_point
+                }
+                else if (old_quadrant == new_quadrant) {
+                    insert_node(head->new_quadrant, new_point)
+                }
+            }
+        } else if (head->internal == true) { // CASE GREY
+            enum new_quadrant = determine_quadrants(head->rectangle, new_point);
+            insert_node(head->new_quadrant, new_point);
+    }
+    return head;
+}
+
+subdivide(rectangle_t* big,enum quadrant) {
+    recntagle_t* temp = malloc(sizeof(*temp));
+    swtich quadrant:
+        case SW:
+            //code
+            return tmep
+}
+
+bool compare_points(point_t*)

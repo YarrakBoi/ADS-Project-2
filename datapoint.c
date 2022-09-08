@@ -1,18 +1,12 @@
-#include <stdlib.h>
-#include <assert.h>
 #include <stdbool.h>
-#include "datapoint.h"
+#include <math.h>
+#include <stdlib.h>
 #include "dictionary.h"
-#include "list.h"
+#include "datapoint.h"
 
 struct point2d {
     long double x_coordinate;
     long double y_coordinate;
-};
-
-struct data_point {
-    point_t* start_coordinate_point;
-    point_t* end_coordinate_point;
     dataDict_t* info;
 };
 
@@ -38,40 +32,20 @@ struct dataDict {
     double end_lon;
 };
 
-struct Node {
-    dataDict_t* data;
-    node_t *next;
-};
-
-point_t* create_point(long double x,long double y) {
+point_t* create_point(long double x, long double y, dataDict_t* info) {
     point_t* temp_point = (point_t*) malloc(sizeof(*temp_point));
     temp_point->x_coordinate = x;
     temp_point->y_coordinate = y;
+    temp_point->info = info;
     return temp_point;
-}
-
-data_point_t* create_data_point(dataDict_t* dataDict) {
-    data_point_t* data_temp = (data_point_t*) malloc(sizeof(*data_temp));
-    assert(data_temp);
-    data_temp->info = dataDict;
-    data_temp->start_coordinate_point = create_point(dataDict->start_lon,dataDict->start_lat);
-    data_temp->end_coordinate_point = create_point(dataDict->end_lon,dataDict->end_lat);
-    return data_temp;
 }
 
 void print_point(point_t* data) {
     printf("%Lf %Lf\n", data->x_coordinate,data->y_coordinate);
-}
-
-void print_datapoint(data_point_t* data) {
-    print_point(data->start_coordinate_point);
-    print_point(data->end_coordinate_point);
     print_data(data->info);
 }
 
-void free_point(data_point_t* d) {
-    free(d->start_coordinate_point);
-    free(d->end_coordinate_point);
+void free_point(point_t* d) {
     free_struct(d->info);
     free(d);
 }

@@ -6,9 +6,8 @@
 #include <assert.h>
 
 #include "dictionary.h"
-#include "list.h"
+#include "quadtree.h"
 #include "datapoint.h"
-#include "datalist.h"
 
 //512 char + null byte
 #define MAXCHAR 513
@@ -38,49 +37,39 @@ struct dataDict {
     double end_lon;
 };
 
-struct Node {
-    dataDict_t* data;
-    node_t *next;
-};
-
 struct point2d {
     long double x_coordinate;
     long double y_coordinate;
-};
-
-struct data_point {
-    point_t* start_coordinate_point;
-    point_t* end_coordinate_point;
     dataDict_t* info;
 };
 
 int main(int argc, char **argv) {
-    
     dataDict_t* temp;
-    data_point_t* data_point_temp;
-    FILE *in_fp = fopen("tests/dataset_1.csv","r");
+    point_t* point_temp;
+    point_t* point_temp2;
+    quadtree_t* quad_root;
+    FILE *in_fp = fopen("tests/dataset_20.csv","r");
     char row[MAXCHAR];
-    char line[MAX_FIELD_CHAR];
-    data_node_t *head = NULL;
-    int address_count = 0;
 
     //assert(in_fp && out_fp);
     assert(in_fp);
     // remove header
     fgets(row, MAXCHAR, in_fp);
     
-    //create structs and populate linked list
+    quad_root = create_tree(create_rectangle(144.952,-37.81,144.978,-37.79));
+    //read in data, craete point and insert to quadtree
     while (((temp) = data_dict_read(in_fp)) != NULL) {
-        data_point_temp = create_data_point(temp);
-        head = create_datalist(head,data_point_temp);
+        point_temp = create_point(temp->start_lon, temp->start_lat, temp);
+        quad_root = insert_node(point_temp,quad_root);
+        point_temp2 = create_point(temp->end_lon, temp->end_lat, temp);
+        quad_root = insert_node(point_temp2,quad_root);
+        printf("entry completed\n");
+        printf("breakpointhere");
     }
-    assert(head != NULL);
+    assert(quad_root != NULL);
     
     //closing after reading required input
     fclose(in_fp);
-
-    print_datalist(head);
-
 
     return 0;
 }

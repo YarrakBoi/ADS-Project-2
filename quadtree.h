@@ -3,23 +3,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "datapoint.h"
+#include "dictionary.h"
+
+typedef enum quadrants quadrants_t;
 
 typedef struct rectangle rectangle_t;
 
-typedef struct quadtree quad_t;
+typedef struct quadtree quadtree_t;
 
-typedef struct point2d point_t;
+enum quadrants determine_quadrants(rectangle_t* bounding_box, point_t* point);
 
-int determine_quadrants(rectangle_t bounding_box, point_t point);
+quadtree_t* create_tree(rectangle_t* rectangle);
 
-quad_t* create_tree();
-
-quad_t* create_node(long double latitude_y,long double longitude_x,long double bot_left_x,long double bot_left_y,long double top_right_x,long double top_right_y);
-
-point_t* create_point(long double x_coordinate, long double y_coordinate);
+quadtree_t* insert_node(point_t* new_point, quadtree_t* head);
 
 rectangle_t* create_rectangle(long double bot_left_x,long double bot_left_y,long double top_right_x,long double top_right_y);
 
-void free_tree(quad_t* root);
+rectangle_t* subdivide(rectangle_t* initial,quadrants_t quadrant);
+
+void free_tree(quadtree_t* root);
 
 #endif

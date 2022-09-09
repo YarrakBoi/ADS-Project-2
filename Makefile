@@ -4,8 +4,8 @@ dict1: test.o dictionary.o list.o
 dict2: test.o dictionary.o list.o array.o
 	gcc -o dict1 test.o dictionary.o list.o array.o -g -Wall
 
-dict3: test2.o dictionary.o datapoint.o quadtree.o
-	gcc -o dict3 test2.o dictionary.o datapoint.o quadtree.o -g -Wall
+dict3: test2.o dictionary.o datapoint.o quadtree.o list.o
+	gcc -o dict3 test2.o dictionary.o datapoint.o quadtree.o list.o -g -Wall
 
 test.o: test.c
 	gcc -c test.c -g -Wall 

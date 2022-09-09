@@ -2,6 +2,7 @@
 #define LIST_H
 
 #include "dictionary.h"
+#include "datapoint.h"
 
 typedef struct Node node_t;
 
@@ -16,6 +17,8 @@ void print_list(node_t* head);
 void free_list(node_t* node);
 
 void print_node(node_t* node,FILE*  out_fp);
+
+void print_node_point(node_t* node, FILE* out_fp, point_t* point);
 
 // compares 2 nodes "a" and "b" by grade1in, returns -1, 0, +1 for <, =, > W3.8 
 int node_cmp_grade1in(node_t *a, node_t *b);

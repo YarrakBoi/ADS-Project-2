@@ -3,11 +3,17 @@
 #include <string.h>
 #include "list.h"
 #include "dictionary.h"
+#include "datapoint.h"
 
 
 struct Node {
     dataDict_t* data;
     node_t *next;
+};
+
+struct point2d {
+    long double x_coordinate;
+    long double y_coordinate;
 };
 
 struct dataDict {
@@ -62,10 +68,13 @@ node_t *create_list(node_t *head, dataDict_t* data) {
 
 void print_list(node_t* head) {
     print_data(head->data);
+    printf("above is head\n");
     while (head->next != NULL) {
         print_data(head->data);
+        printf("break here\n");
         head = head->next;
     }
+    printf("end of an iteration\n\n");
 }
 
 void free_list(node_t* head) {
@@ -99,6 +108,12 @@ void print_node(node_t* node, FILE*  out_fp) {
     fprintf(out_fp,
     "--> footpath_id: %d || address: %s || clue_sa: %s || asset_type: %s || deltaz: %f || distance: %f || grade1in: %f || mcc_id: %d || mccid_int: %d || rlmax: %f || rlmin: %f || segside: %s || statusid: %d || streetid: %d || street_group: %d || start_lat: %f || start_lon: %f || end_lat: %f || end_lon: %f ||\n"
     ,node->data->footpath_id,node->data->address,node->data->clue_sa,node->data->asset_type,node->data->deltaz,node->data->distance,node->data->grade1in,node->data->mcc_id,node->data->mccid_int,node->data->rlmax,node->data->rlmin,node->data->segside,node->data->statusid,node->data->streetid,node->data->street_group,node->data->start_lat,node->data->start_lon,node->data->end_lat,node->data->end_lon);
+}
+
+void print_node_point(node_t* node, FILE* out_fp, point_t* point) {
+    fprintf(out_fp,
+    "%Lf %Lf\n--> footpath_id: %d || address: %s || clue_sa: %s || asset_type: %s || deltaz: %f || distance: %f || grade1in: %f || mcc_id: %d || mccid_int: %d || rlmax: %f || rlmin: %f || segside: %s || statusid: %d || streetid: %d || street_group: %d || start_lat: %f || start_lon: %f || end_lat: %f || end_lon: %f ||\n"
+    ,point->x_coordinate,point->y_coordinate,node->data->footpath_id,node->data->address,node->data->clue_sa,node->data->asset_type,node->data->deltaz,node->data->distance,node->data->grade1in,node->data->mcc_id,node->data->mccid_int,node->data->rlmax,node->data->rlmin,node->data->segside,node->data->statusid,node->data->streetid,node->data->street_group,node->data->start_lat,node->data->start_lon,node->data->end_lat,node->data->end_lon);
 }
 
 int node_cmp_grade1in(node_t *a, node_t *b) {

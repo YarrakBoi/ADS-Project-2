@@ -5,7 +5,7 @@
 
 typedef struct point2d point_t;
 
-point_t* create_point(long double x, long double y, dataDict_t* info);
+point_t* create_point(long double x, long double y);
 
 void print_point(point_t* data);
 

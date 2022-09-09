@@ -3,6 +3,7 @@
 #include <assert.h>
 #include "quadtree.h"
 #include "dictionary.h"
+#include "list.h"
 
 //0 for SW,1 for SE, 2 for NE, 3 for NW
 enum quadrants{SW = 0, SE = 1, NE = 2, NW = 3};
@@ -10,7 +11,6 @@ enum quadrants{SW = 0, SE = 1, NE = 2, NW = 3};
 struct point2d {
     long double x_coordinate;
     long double y_coordinate;
-    dataDict_t* info;
 };
 
 struct rectangle {
@@ -20,10 +20,16 @@ struct rectangle {
     long double top_right_y;
 };
 
+struct Node {
+    dataDict_t* data;
+    node_t *next;
+};
+
 struct quadtree {
     bool is_internal_root;
     rectangle_t* bounding_box;
     point_t* point;
+    node_t* info_list;
     quadtree_t* NW;
     quadtree_t* NE;
     quadtree_t* SW;
@@ -57,6 +63,7 @@ quadtree_t* create_tree(rectangle_t* rectangle) {
     assert(temp);
     temp->is_internal_root = false;
     temp->bounding_box = rectangle;
+    temp->info_list = NULL;
     temp->point = NULL;
     temp->NE = NULL;
     temp->NW = NULL;
@@ -109,16 +116,24 @@ rectangle_t* create_rectangle(long double bot_left_x,long double bot_left_y,long
     return temp;
 }
 
-quadtree_t* insert_node(point_t* new_point, quadtree_t* head) {
+quadtree_t* insert_node(point_t* new_point, quadtree_t* head, dataDict_t* data) {
+    quadtree_t* temp_root;
     if (head->is_internal_root == false) {
     //if root is empty, just insert 
         if (in_bounding(new_point,head->bounding_box)) {
-            if (head->point == NULL) { // CASE WHITE NODE
+            if (head->point == NULL) { // CASE WHITE node
                 head->point = new_point;
+                head->info_list = create_list(head->info_list, data);
             }
-            else if(head->point != NULL) { // CASE BLACK NODE
+            else if(head->point != NULL) { // CASE BLACK node
+                //if two points have the same coordinate
+                if((head->point->x_coordinate == new_point->x_coordinate) && (head->point->y_coordinate == new_point->y_coordinate)) {
+                    head->info_list = create_list(head->info_list, data);
+                    return head;
+                }
                 //move root point to new root
                 point_t* old_point = head->point;
+                node_t* temp_list = head->info_list;
                 head->point = NULL;
                 head->is_internal_root = true;
                 quadrants_t old_quadrant = determine_quadrants(head->bounding_box, old_point); 
@@ -126,40 +141,63 @@ quadtree_t* insert_node(point_t* new_point, quadtree_t* head) {
                     case SW:
                         head->SW = create_tree(subdivide(head->bounding_box, old_quadrant));
                         head->SW->point = old_point;
+                        head->SW->info_list = temp_list;
+                        temp_root = head->SW;
                         break;
                     case NW:
                         head->NW = create_tree(subdivide(head->bounding_box, old_quadrant));
                         head->NW->point = old_point;
+                        head->NW->info_list = temp_list;
+                        temp_root = head->NW;
                         break;
                     case NE:
                         head->NE = create_tree(subdivide(head->bounding_box, old_quadrant));
                         head->NE->point = old_point;
+                        head->NE->info_list = temp_list;
+                        temp_root = head->NE;
                         break;
                     case SE:
                         head->SE = create_tree(subdivide(head->bounding_box, old_quadrant));
                         head->SE->point = old_point;
+                        head->SE->info_list = temp_list;
+                        temp_root = head->SE;
                         break;        
                 }
                 quadrants_t new_quadrant = determine_quadrants(head->bounding_box, new_point);
                 if (old_quadrant != new_quadrant){
                     switch(new_quadrant){
                     case SW:
-                        head->SW = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        if(head->SW == NULL){
+                            head->SW = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        }
                         head->SW->point = new_point;
+                        head->SW->info_list = create_list(head->SW->info_list, data);
                         break;
                     case NW:
-                        head->NW = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        if(head->NW == NULL){
+                            head->NW = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        }
                         head->NW->point = new_point;
+                        head->NW->info_list = create_list(head->NW->info_list, data);
                         break;
                     case NE:
-                        head->NE = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        if(head->NE == NULL){
+                            head->NE = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        }
                         head->NE->point = new_point;
+                        head->NE->info_list = create_list(head->NE->info_list, data);
                         break;
                     case SE:
-                        head->SE = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        if(head->SE == NULL){
+                            head->SE = create_tree(subdivide(head->bounding_box, new_quadrant));
+                        }
                         head->SE->point = new_point;
+                        head->SE->info_list = create_list(head->SE->info_list, data);
                         break;        
                     }
+                }
+                else if(new_quadrant == old_quadrant) {
+                    insert_node(new_point, temp_root, data);
                 }
             }
         }
@@ -171,25 +209,25 @@ quadtree_t* insert_node(point_t* new_point, quadtree_t* head) {
                     if(head->SW == NULL) {
                         head->SW = create_tree(subdivide(head->bounding_box, new_quadrant));
                     }
-                    insert_node(new_point,head->SW);
+                    insert_node(new_point, head->SW, data);
                     break;
                 case NW:
                     if(head->NW == NULL) {
                         head->NW = create_tree(subdivide(head->bounding_box, new_quadrant));
                         }
-                    insert_node(new_point, head->NW);
+                    insert_node(new_point, head->NW, data);
                     break;
                 case NE:
                     if(head->NE == NULL) {
                         head->NE = create_tree(subdivide(head->bounding_box, new_quadrant));
                     }
-                    insert_node(new_point, head->NE);
+                    insert_node(new_point, head->NE, data);
                     break;
                 case SE:
                     if(head->NE == NULL) {
                         head->NE = create_tree(subdivide(head->bounding_box, new_quadrant));
                     }
-                    insert_node(new_point, head->SE);
+                    insert_node(new_point, head->NE, data);
                     break;  
             }
         }
@@ -217,4 +255,32 @@ rectangle_t* subdivide(rectangle_t* initial,quadrants_t quadrant) {
             break;
     }
     return rect_temp;
+}
+
+void search_quadtree(point_t* point, quadtree_t* head, FILE* out_fp) {
+    if (head->point == NULL) {
+        quadrants_t temp = determine_quadrants(head->bounding_box, point);
+        switch (temp) {
+            case SW:
+                printf(" SW");
+                search_quadtree(point, head->SW, out_fp);
+                break;
+            case NE:
+                printf(" NE");
+                search_quadtree(point, head->NE, out_fp);
+                break;
+            case SE:
+                printf(" SE");
+                search_quadtree(point, head->SE, out_fp);
+                break;
+            case NW:
+                printf(" NW");
+                search_quadtree(point, head->NW, out_fp);
+                break; 
+        }
+    }
+    else if (((head->point->x_coordinate == point->x_coordinate)) && ((head->point->y_coordinate == point->y_coordinate))) {
+        printf("\n");
+        print_node_point(head->info_list, out_fp, point);
+    }
 }

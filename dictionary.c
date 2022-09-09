@@ -186,24 +186,6 @@ dataDict_t *data_dict_read(FILE *f) {
 
 void print_data(dataDict_t* data) {
     printf("head footpath_id is %d\n", data->footpath_id);
-    printf("head address is %s\n", data->address);
-    printf("head clue_sa is %s\n", data->clue_sa);
-    printf("head asset_type is %s\n", data->asset_type);
-    printf("head deltaz is %f\n",data->deltaz);
-    printf("head distance is %f\n",data->distance);
-    printf("head grade1in is %f\n",data->grade1in);
-    printf("head mcc_id is %d\n",data->mcc_id);
-    printf("head mccid_int is %d\n",data->mccid_int);
-    printf("head rlmax is %f\n",data->rlmax);
-    printf("head rlmin is %f\n",data->rlmin);
-    printf("head segside is %s\n",data->segside);
-    printf("head statusid is %d\n",data->statusid);
-    printf("head streetid is %d\n",data->streetid);
-    printf("head street_group is %d\n",data->street_group);
-    printf("head start_lat is %f\n",data->start_lat);
-    printf("head start_lon is %f\n",data->start_lon);
-    printf("head end_lat is %f\n",data->end_lat);
-    printf("head end_lon is %f\n",data->end_lon);
 }
 
 void free_struct(dataDict_t *d) {

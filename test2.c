@@ -65,22 +65,21 @@ int main(int argc, char **argv) {
     point_t* point_temp;
     point_t* point_temp2;
     quadtree_t* quad_root;
-    //FILE *in_fp = fopen(argv[2],"r");
-    //FILE *out_fp = fopen(argv[3],"w");
-    FILE *in_fp = fopen("tests/dataset_1.csv","r");
-    FILE *out_fp = fopen("output.txt","w");
+    FILE *in_fp = fopen(argv[2],"r");
+    FILE *out_fp = fopen(argv[3],"w");
     char row[MAXCHAR];
     long double x_temp;
     long double y_temp;
+    char* query_point;
 
     assert(in_fp && out_fp);
     
     // remove header
     fgets(row, MAXCHAR, in_fp);
     
-    //quad_root = create_tree(create_rectangle(strtod(argv[5],NULL),strtod(argv[6],NULL),strtod(argv[7],NULL),strtod(argv[8],NULL)));
-    quad_root = create_tree(create_rectangle(144.969,-37.7965,144.9725,-37.7945));
-    //read in data, craete point and insert to quadtree
+    quad_root = create_tree(create_rectangle(strtold(argv[4],NULL),strtold(argv[5],NULL),strtold(argv[6],NULL),strtold(argv[7],NULL)));
+
+    //read in data, create point and insert to quadtree
     while (((temp) = data_dict_read(in_fp)) != NULL) {
         point_temp = create_point(temp->start_lon, temp->start_lat);
         quad_root = insert_node(point_temp,quad_root,temp);
@@ -92,22 +91,11 @@ int main(int argc, char **argv) {
     //closing after reading required input
     fclose(in_fp);
 
-    /*while (fscanf(stdin,"%Lf %Lf\n",&x_temp,&y_temp) == 2) {
-        point_temp = create_point(x_temp,y_temp);
-        printf("%Lf %Lf -->",x_temp,y_temp);
+    while (fscanf(stdin,"%s\n",query_point) == 2) {
+        point_temp = create_point(strtold(x_string,NULL),strtold(y_string,NULL));
+        printf("%s %s -->",x_string,y_string);
         search_quadtree(point_temp,quad_root,out_fp);
         free_point(point_temp);
-    }*/
-
-    point_temp = create_point(144.97056424489568,-37.796155887263744);
-    printf("%Lf %Lf -->",point_temp->x_coordinate,point_temp->y_coordinate);
-    search_quadtree(point_temp,quad_root,out_fp);
-
-    point_temp = create_point(144.96941668057087,-37.79606116572821);
-    printf("%Lf %Lf -->",point_temp->x_coordinate,point_temp->y_coordinate);
-    search_quadtree(point_temp,quad_root,out_fp);
-
-
-
+    }
     return 0;
 }

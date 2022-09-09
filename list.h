@@ -23,4 +23,6 @@ void print_node_point(node_t* node, FILE* out_fp, point_t* point);
 // compares 2 nodes "a" and "b" by grade1in, returns -1, 0, +1 for <, =, > W3.8 
 int node_cmp_grade1in(node_t *a, node_t *b);
 
+void insertion_sort(node_t* *head);
+
 #endif

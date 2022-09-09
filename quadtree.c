@@ -279,7 +279,8 @@ void search_quadtree(point_t* point, quadtree_t* head, FILE* out_fp) {
                 break; 
         }
     }
-    else if (((head->point->x_coordinate == point->x_coordinate)) && ((head->point->y_coordinate == point->y_coordinate))) {
+    // else if (((head->point->x_coordinate == point->x_coordinate)) && ((head->point->y_coordinate == point->y_coordinate))) {
+    else {
         printf("\n");
         print_node_point(head->info_list, out_fp, point);
     }

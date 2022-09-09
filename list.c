@@ -62,7 +62,9 @@ node_t *create_list(node_t *head, dataDict_t* data) {
             iterator = iterator->next;
         }
         iterator->next = temp;
+        printf("added footpath_id: %d\n", temp->data->footpath_id);
     }
+    insertion_sort(&head);
     return head;
 }
 
@@ -124,5 +126,25 @@ int node_cmp_grade1in(node_t *a, node_t *b) {
         return 1;
     }
     return 0;
+}
+
+void insertion_sort(node_t* *head) {
+    for (node_t* *current = head; *current != NULL; ) {
+        node_t* *sorted = head;
+        
+        while (*sorted != *current && !( (*current)->data->footpath_id < (*sorted)->data->footpath_id)) {
+            sorted = &(*sorted)->next;
+        }
+        
+        if (*sorted != *current) {
+            node_t* tmp = *current;
+            *current = (*current)->next;
+            tmp->next = *sorted;
+            *sorted = tmp;
+        }
+        else {
+            current = &(*current)->next;
+        }
+    }
 }
 
